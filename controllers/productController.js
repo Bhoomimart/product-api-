@@ -20,6 +20,7 @@ exports.createProduct = async (req, res) => {
             images,
         });
 
+        
         await product.save();
         res.status(201).json(product);
     } catch (error) {

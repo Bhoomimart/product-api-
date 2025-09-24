@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 // Routes
 const productRoutes = require("./routes/productRoutes");
 app.use("/api/products", productRoutes);
