@@ -22,7 +22,7 @@ exports.createProduct = async (req, res) => {
             colors: colorsArray,
             delivery: deliveryArray,
             description,
-            images
+            images: req.files ? req.files.map(file => file.path) : []
         });
 
         await product.save();
