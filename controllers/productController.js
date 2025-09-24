@@ -2,25 +2,29 @@ const Product = require("../models/Product");
 
 exports.createProduct = async (req, res) => {
     try {
-        const { name, reviews, price, discount, coupon, offers, warranty, delivery, colors, description } = req.body;
+        const { name, price, discount, reviews, coupon, offers, warranty, colors, delivery, description } = req.body;
 
+        // images array
         const images = req.files ? req.files.map(file => file.path) : [];
+
+        // colors aur delivery JSON string se parse
+        const colorsArray = colors ? JSON.parse(colors) : [];
+        const deliveryArray = delivery ? JSON.parse(delivery) : [];
 
         const product = new Product({
             name,
-            reviews,
             price,
             discount,
+            reviews,
             coupon,
             offers,
             warranty,
-            delivery: delivery ? JSON.parse(delivery) : [],
-            colors: colors ? JSON.parse(colors) : [],
+            colors: colorsArray,
+            delivery: deliveryArray,
             description,
-            images,
+            images
         });
 
-        
         await product.save();
         res.status(201).json(product);
     } catch (error) {
