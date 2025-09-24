@@ -1,11 +1,10 @@
 const Product = require("../models/Product");
 
-// Create product
 exports.createProduct = async (req, res) => {
     try {
         const { name, reviews, price, discount, coupon, offers, warranty, delivery, colors, description } = req.body;
 
-        const images = req.files.map(file => file.path); // ✅ multiple image URLs from Cloudinary
+        const images = req.files ? req.files.map(file => file.path) : [];
 
         const product = new Product({
             name,
@@ -27,6 +26,7 @@ exports.createProduct = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // Get all products
 exports.getProducts = async (req, res) => {
