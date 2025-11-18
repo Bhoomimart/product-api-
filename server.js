@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// Middleware file setup
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
