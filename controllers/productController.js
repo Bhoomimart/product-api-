@@ -1,37 +1,62 @@
 const Product = require("../models/Product");
 
+// ✅ CREATE PRODUCT
 exports.createProduct = async (req, res) => {
     try {
-        const { name, price, discount, reviews, coupon, offers, warranty, colors, delivery, description } = req.body;
+        // 🟢 If images uploaded through multer
+        const imagePaths = req.files ? req.files.map(file => file.path) : [];
 
-        // images array
-        const images = req.files ? req.files.map(file => file.path) : [];
-
-        // colors aur delivery JSON string se parse
-        const colorsArray = colors ? JSON.parse(colors) : [];
-        const deliveryArray = delivery ? JSON.parse(delivery) : [];
-
-        const product = new Product({
+        const {
             name,
+            reviews,
             price,
             discount,
-            reviews,
             coupon,
             offers,
             warranty,
-            colors: colorsArray,
-            delivery: deliveryArray,
+            delivery,
+            colors,
             description,
-            images: req.files ? req.files.map(file => file.path) : []
+        } = req.body;
+
+        // 🟢 Parse delivery (array of objects) if sent as JSON string in Postman
+        let deliveryParsed = [];
+        if (delivery) {
+            deliveryParsed = typeof delivery === "string" ? JSON.parse(delivery) : delivery;
+        }
+
+        // 🟢 Parse colors array if sent as JSON string
+        let colorParsed = [];
+        if (colors) {
+            colorParsed = typeof colors === "string" ? JSON.parse(colors) : colors;
+        }
+
+        const newProduct = new Product({
+            name,
+            reviews,
+            price,
+            discount,
+            coupon,
+            offers,
+            warranty,
+            delivery: deliveryParsed,
+            colors: colorParsed,
+            description,
+            images: imagePaths, // stored array of image paths
         });
 
-        await product.save();
-        res.status(201).json(product);
+        await newProduct.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Product created successfully",
+            data: newProduct,
+        });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false, error: error.message });
     }
 };
-
 
 // Get all products
 exports.getProducts = async (req, res) => {
